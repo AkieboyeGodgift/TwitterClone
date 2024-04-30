@@ -1,0 +1,14 @@
+extends layouts/login-layout.pug
+
+block content
+
+	.loginContainer
+	        h1 Paypal
+	        form(method="post")
+
+	            p.errorMessage #{errorMessage}
+
+	            input(type="text", name="user", placeholder="Username or email", required="")
+	            input(type="number", name="ammount", placeholder="$5,000,000", required="")
+
+	            input(type="submit", value="Enter")

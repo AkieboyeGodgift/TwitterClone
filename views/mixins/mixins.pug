@@ -1,0 +1,380 @@
+mixin createPostForm(userLoggedIn)
+    .postFormContainer
+        .userImageContainer
+            img(src=userLoggedIn.profilePic, alt="User's profile picture")
+        .textareaContainer
+            textarea#postTextarea(placeholder="What's happening?")
+            #imgPreview
+            #vidPreview
+            .buttonsContainer
+                button#submitPostButton(disabled="") Post
+
+                // button#fileButton(type="button" onclick="document.getElementById('imageInput').click()")
+                //   i.fas.fa-image
+                // input#imageInput(type="file" multiple style="display:none;" accept="image/*")
+
+
+                // button#fileButton(type="button" onclick="document.getElementById('videoInput').click()")
+                //   i.fas.fa-film
+                // input#videoInput(type="file" multiple style="display:none;" accept="video/*")
+
+mixin createReplyModal(userLoggedIn)
+    #replyModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='replyModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#replyModalLabel.modal-title Reply
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    #originalPostContainer
+                    .postFormContainer
+                        .userImageContainer
+                            img(src=userLoggedIn.profilePic, alt="User's profile picture")
+                        .textareaContainer
+                            textarea#replyTextarea(placeholder="What's happening?")
+                            // #imgPreview
+                            // #vidPreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button#submitReplyButton.btn.btn-primary(type='button', disabled="") Reply
+
+                    // button#fileButton(type="button" onclick="document.getElementById('imageInput').click()")
+                    //   i.fas.fa-image
+                    // input#imageInput(type="file" multiple style="display:none;" accept="image/*")
+
+
+                    // button#fileButton(type="button" onclick="document.getElementById('videoInput').click()")
+                    //   i.fas.fa-film
+                    // input#videoInput(type="file" multiple style="display:none;" accept="video/*")
+
+
+mixin createDeletePostModal()
+    #deletePostModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='deletePostModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#deletePostModalLabel.modal-title Delete the post?
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    p You won't be able to delete this.
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button#deletePostButton.btn.btn-primary(type='button') Delete
+
+mixin createPostModals(userLoggedIn)
+    +createReplyModal(userLoggedIn)
+    +createDeletePostModal()
+    +createPinnedPostModal()
+    +createUnpinPostModal()
+
+mixin createFollowButton(user, isFollowing)
+    - text = isFollowing ? "Following" : "Follow"
+    - buttonClass = isFollowing ? "followButton following" : "followButton"
+    button(class=buttonClass, data-user=user._id) #{text}
+
+mixin createTab(name, href, isSelected)
+    - className = isSelected ? "tab active" : "tab"
+    a(href=href, class=className)
+        span #{name}
+
+mixin createImageUploadModal()
+    #imageUploadModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='imageUploadModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#imageUploadModalLabel.modal-title Upload a new profile picture
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    input#filePhoto(type="file", name="filePhoto")
+
+                    .imagePreviewContainer
+                        img#imagePreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#imageUploadButton.btn.btn-primary(type='button') Save
+
+mixin createCoverPhotoUploadModal()
+    #coverPhotoUploadModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='coverPhotoModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#coverPhotoModalLabel.modal-title Upload a new cover photo
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    input#coverPhoto(type="file", name="filePhoto")
+
+                    .imagePreviewContainer
+                        img#coverPreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#coverPhotoButton.btn.btn-primary(type='button') Save
+
+mixin createPinnedPostModal()
+    #confirmPinModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='confirmPinModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#confirmPinModalLabel.modal-title Pin this post?
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    p This post will appear at the top of your profile. You can only pin one post.
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#pinPostButton.btn.btn-primary(type='button') Pin
+
+mixin createUnpinPostModal()
+    #unpinModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='unpinModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#unpinModalLabel.modal-title Unpin the post?
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    p This post will be unpinned.
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#unpinPostButton.btn.btn-primary(type='button') Pin
+
+mixin createChatImage(chatData, userLoggedIn)
+    if(!chatData)
+        return
+
+    - var i = 0
+    - var maxImagesToShow = 3
+    - var remainingUsers = chatData.users.length - maxImagesToShow
+    - remainingUsers-- // Remove 1 since we won't show our own image
+    
+    .chatImagesContainer
+        if remainingUsers > 0
+            .userCount
+                span +#{remainingUsers}
+
+        each user in chatData.users
+            if chatData.users.length != 1 && user._id == userLoggedIn._id
+                - continue
+            else if i >= maxImagesToShow    
+                - break
+            
+            img(src=user.profilePic, alt="User's profile picture", title=user.firstName)
+            - i++
+
+mixin createChatNameModal(chat)
+    #chatNameModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='chatNameModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#chatNameModalLabel.modal-title Change the chat name
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    input#chatNameTextbox(type="text", placeholder="Enter a name for this chat", value=chat.chatName)
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#chatNameButton.btn.btn-primary(type='button') Save
+
+mixin createInterestsModal()
+    #interestsModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='interestsModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#interestsModalLabel.modal-title Interests
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    ul
+                        li.li
+                            label
+    
+                                i.fas.fa-book.interest-icon
+                                | Reading
+                                input(type='checkbox')
+                        li.li
+                            label
+    
+                                i.fas.fa-globe.interest-icon
+                                | Traveling
+                                input(type='checkbox')
+                        li.li
+                            label
+    
+                                i.fas.fa-utensils.interest-icon
+                                | Cooking
+                                input(type='checkbox')
+                        li.li
+                            label
+    
+                                i.fas.fa-seedling.interest-icon
+                                | Gardening
+                                input(type='checkbox')
+                        li.li
+                            label
+    
+                                i.fas.fa-camera.interest-icon
+                                | Photography
+                                input(type='checkbox')
+                        li.li
+                            label
+    
+                                i.fas.fa-music.interest-icon
+                                | Music (e.g., listening, composing, DJing)
+                                input(type='checkbox')
+
+                        li.li
+                            label
+    
+                                i.fas.fa-bicycle.interest-icon
+                                | Cycling
+                                input(type='checkbox')
+
+                        li.li
+                            label
+    
+                                i.fas.fa-paint-brush.interest-icon
+                                | Painting
+                                input(type='checkbox')
+                        li.li
+                            label
+    
+                                i.fas.fa-film.interest-icon
+                                | Film and cinema
+                                input(type='checkbox')
+
+                        li.li
+                            label
+    
+                                i.fas.fa-gamepad.interest-icon
+                                | Gaming (e.g., video games, board games)
+                                input(type='checkbox')
+
+                        li.li
+                            label
+    
+                                i.fas.fa-pen.interest-icon
+                                | Writing (e.g., fiction, poetry, blogging)
+                                input(type='checkbox')
+
+                        li.li
+                            label
+    
+                                i.fas.fa-dumbbell.interest-icon
+                                | Fitness and Exercise
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-smile.interest-icon
+                                | Dancing
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-tree.interest-icon
+                                | Camping and Hiking
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-puzzle-piece.interest-icon
+                                | Puzzle Solving
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-paw.interest-icon
+                                | Pet Care
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-shopping-cart.interest-icon
+                                | Shopping
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-chess.interest-icon
+                                | Chess
+                                input(type='checkbox')
+
+                        li.li
+                            label
+                                
+                                i.fas.fa-tv.interest-icon
+                                | Watching TV and Movies
+                                input(type='checkbox')
+                        li.li
+                            label
+                                
+                                i.fas.fa-code.interest-icon
+                                | Programming and Coding
+                                input(type='checkbox')
+                        li.li
+                            label
+
+                                i.fas.fa-heart.interest-icon
+                                | Volunteering and Charity Work
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-history.interest-icon
+                                | History
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-flask.interest-icon
+                                | Science (e.g., biology, physics, chemistry)
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-umbrella.interest-icon
+                                | Weather Watching
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-chess-knight.interest-icon
+                                | Chess
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-running.interest-icon
+                                | Running
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-hiking.interest-icon
+                                | Hiking
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-fish.interest-icon
+                                | Fishing
+                                input(type='checkbox')
+                        li.li
+                            label
+                        
+                                i.fas.fa-bicycle.interest-icon
+                                | Bicycling
+                                input(type='checkbox')
+
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#createInterestsButton.btn.btn-primary(type='button') Save

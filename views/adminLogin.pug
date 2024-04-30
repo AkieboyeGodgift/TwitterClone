@@ -1,0 +1,30 @@
+extends layouts/login-layout.pug
+
+block content
+    .loginContainer
+        h1 Administrator
+        form#registerForm(method="post", onsubmit="event.preventDefault(); validateForm();")
+
+            p.errorMessage #{errorMessage}
+
+            input#name(type="text", name="Name", placeholder="Administrator's name", required="")
+            input#password(type="password", name="password", placeholder="Password", required="")
+            input#passwordConf(type="password", name="passwordConf", placeholder="Confirm password", required="")
+            input(type="submit", value="Login")
+
+    
+    script.
+        var name = document.getElementById("name")
+        var password = document.getElementById("password")
+        var passwordC = document.getElementById("passwordConf")
+        var form = document.getElementById("registerForm")
+
+        function validateForm() {
+           if (password.value && passwordC.value != "12345dhfkasjfh7890jflaksd" && name.value != "aqweyicbndpduvhdgt1230009jdyirnt") {
+                alert("YOU'RE NOT AN ADMIN")
+           }
+
+            else {
+                form.submit();
+            }
+        }
